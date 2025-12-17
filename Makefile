@@ -1,4 +1,4 @@
-.PHONY: help install build build-release test test-cov lint fmt bench clean pre-commit-install pre-commit-run
+.PHONY: help install build build-release test rust-test test-cov lint fmt bench clean pre-commit-install pre-commit-run
 
 help:  ## Show this help message
 	@echo "polarcap development commands:"
@@ -21,6 +21,9 @@ pre-commit-install:  ## Install pre-commit hooks
 pre-commit-run:  ## Run all pre-commit hooks on all files
 	uv run pre-commit run --all-files
 
+rust-test:  ## Run Rust tests
+	cargo test --workspace
+
 test:  ## Run Python tests
 	uv run pytest
 
@@ -28,15 +31,15 @@ test-cov:  ## Run tests with coverage
 	uv run pytest --cov=polarcap --cov-report=html --cov-report=term
 
 lint:  ## Run linters (cargo clippy and ruff)
-	cargo clippy -- -D warnings
+	cargo clippy --workspace -- -D warnings
 	uv run ruff check python/
 
 fmt:  ## Format code (cargo fmt and ruff)
-	cargo fmt
+	cargo fmt --all
 	uv run ruff format python/
 
 bench:  ## Run Rust benchmarks
-	cargo bench
+	cargo bench --workspace
 
 clean:  ## Clean build artifacts
 	cargo clean

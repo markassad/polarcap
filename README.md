@@ -76,35 +76,34 @@ maturin develop
 #### Using uv
 
 ```bash
+# Rust tests
+cargo test                    # Run tests in current crate (with helpful workspace hint)
+cargo test --workspace       # Run ALL tests in workspace (recommended)
+
 # Python tests
 uv run pytest
 
-# Python tests with coverage
-uv run pytest --cov=polarcap --cov-report=html
-
-# Rust tests
-cargo test
-
 # Benchmarks
-cargo bench
+cargo bench --workspace
 
 # Or use the Makefile:
-make test      # Run Python tests
-make test-cov  # Run with coverage
-make bench     # Run benchmarks
+make rust-test               # Run all workspace tests (cargo test --workspace)
+make test                    # Run Python tests
+make bench                   # Run benchmarks
 ```
 
 #### Using pip
 
 ```bash
 # Rust tests
-cargo test
+cargo test                    # Run tests in current crate (with helpful workspace hint)
+cargo test --workspace       # Run ALL tests in workspace (recommended)
 
 # Python tests
 pytest
 
 # Benchmarks
-cargo bench
+cargo bench --workspace
 ```
 
 ### Code Quality
@@ -140,14 +139,24 @@ pytest --cov
 
 ```
 polarcap/
-├── src/              # Rust source code for parsing
+├── src/              # Python bindings (PyO3)
+├── polarcap-core/    # Core Rust library (pure Rust, testable with cargo test)
+│   ├── src/          # Core parsing logic
+│   └── benches/      # Rust benchmarks
 ├── python/polarcap/  # Python package with API
-├── tests/            # Python and Rust tests
-├── benches/          # Rust benchmarks
-├── docs/             # Documentation
-├── Cargo.toml        # Rust dependencies
+├── tests/            # Python integration tests
+├── Cargo.toml        # Workspace configuration
 └── pyproject.toml    # Python packaging configuration
 ```
+
+The project uses a **workspace structure** to separate concerns:
+- **`polarcap-core`**: Pure Rust library with all the core logic - fully testable with `cargo test`
+- **`polarcap` (root)**: PyO3 Python bindings that expose the core functionality to Python
+
+### Testing
+- `cargo test` runs tests in the current crate (root) with a helpful hint
+- `cargo test --workspace` runs ALL tests in the workspace (recommended)
+- `make rust-test` automatically runs all workspace tests
 
 ## Contributing
 

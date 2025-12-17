@@ -1,0 +1,19 @@
+[package]
+name = "polarcap-core"
+version = "0.1.0"
+edition = "2021"
+authors = ["Mark Assad <markassad@users.noreply.github.com>"]
+description = "Core polarcap functionality without Python bindings"
+license = "MIT OR Apache-2.0"
+
+[lib]
+name = "polarcap_core"
+crate-type = ["rlib"]
+
+[dependencies]
+polars = { version = "0.52", features = ["lazy", "timezones"] }
+arrow = { version = "57.1.0", default-features = true }
+pcap-parser = "0.17"
+
+[dev-dependencies]
+criterion = "0.8"

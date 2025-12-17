@@ -36,6 +36,14 @@ repos:
         files: \.rs$
         pass_filenames: false
 
+      # Rust tests (only if Rust files changed)
+      - id: cargo-test
+        name: cargo test
+        entry: cargo test --workspace --quiet
+        language: system
+        files: ^(polarcap-core/src/|src/|Cargo\.(toml|lock))$
+        pass_filenames: false
+
       # Python tests (only if test files changed)
       - id: pytest-changed
         name: pytest (changed files only)

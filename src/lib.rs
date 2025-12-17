@@ -1,7 +1,5 @@
 use pyo3::prelude::*;
 
-mod parser;
-
 /// A Polars interface to pcap (Packet Capture) data.
 ///
 /// This module provides high-performance pcap file parsing using Rust,
@@ -15,8 +13,15 @@ fn _polarcap(_py: Python<'_>, m: &Bound<'_, PyModule>) -> PyResult<()> {
 #[cfg(test)]
 mod tests {
     #[test]
-    fn test_module_init() {
-        // Basic test to ensure module compiles
+    fn test_workspace_hint() {
+        // This test serves as a reminder to run workspace tests
+        println!("");
+        println!("💡 TIP: Run 'cargo test --workspace' to test all crates in this workspace");
+        println!("   - polarcap (this crate): Python bindings");
+        println!("   - polarcap-core: Core Rust functionality");
+        println!("");
+
+        // Basic test to ensure crate compiles
         assert_eq!(env!("CARGO_PKG_NAME"), "polarcap");
     }
 }

@@ -1,3 +1,7 @@
+[workspace]
+members = ["polarcap-core"]
+resolver = "2"
+
 [package]
 name = "polarcap"
 version = "0.1.0"
@@ -10,16 +14,11 @@ readme = "README.md"
 
 [lib]
 name = "polarcap"
-crate-type = ["cdylib", "rlib"]
+crate-type = ["cdylib"]
 
 [dependencies]
+polarcap-core = { path = "polarcap-core" }
 pyo3 = { version = "0.27", features = ["extension-module"] }
-polars = { version = "0.52", features = ["lazy", "timezones"] }
-arrow = { version = "57.1.0", default-features = true }
-pcap-parser = "0.17"
-
-[dev-dependencies]
-criterion = "0.8"
 
 [profile.release]
 lto = "fat"
@@ -29,3 +28,4 @@ opt-level = 3
 [[bench]]
 name = "pcap_parsing"
 harness = false
+path = "polarcap-core/benches/pcap_parsing.rs"
