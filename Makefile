@@ -1,18 +1,25 @@
-.PHONY: help install build build-release test test-cov lint fmt bench clean
+.PHONY: help install build build-release test test-cov lint fmt bench clean pre-commit-install pre-commit-run
 
 help:  ## Show this help message
 	@echo "polarcap development commands:"
 	@echo ""
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 install:  ## Install dependencies and set up development environment
 	uv sync --group dev
+	$(MAKE) pre-commit-install
 
 build:  ## Build the Rust extension for development
 	uv run maturin develop
 
 build-release:  ## Build optimized release binary/wheel
 	uv run maturin build --release
+
+pre-commit-install:  ## Install pre-commit hooks
+	uv run pre-commit install
+
+pre-commit-run:  ## Run all pre-commit hooks on all files
+	uv run pre-commit run --all-files
 
 test:  ## Run Python tests
 	uv run pytest

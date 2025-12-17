@@ -4,7 +4,7 @@
 ## Type of Change
 <!-- Check the relevant box -->
 - [ ] Bug fix (non-breaking change which fixes an issue)
-- [ ] New feature (non-breaking change which adds functionality)  
+- [ ] New feature (non-breaking change which adds functionality)
 - [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
 - [ ] Documentation update
 - [ ] Performance improvement
@@ -13,7 +13,7 @@
 ## Testing
 <!-- Describe the tests you ran and how to reproduce them -->
 - [ ] Rust tests pass (`cargo test`)
-- [ ] Python tests pass (`uv run pytest`) 
+- [ ] Python tests pass (`uv run pytest`)
 - [ ] Linting passes (`make lint`)
 - [ ] Formatting is correct (`make fmt`)
 

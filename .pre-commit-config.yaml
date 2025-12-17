@@ -1,0 +1,45 @@
+repos:
+  # Python formatting and linting
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.7.4
+    hooks:
+      - id: ruff
+        name: ruff (lint)
+        args: [--fix]
+        files: ^python/
+      - id: ruff-format
+        name: ruff (format)
+        files: ^python/
+
+  # General file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-case-conflict
+      - id: mixed-line-ending
+        args: ['--fix=lf']
+
+  # Local hooks for Rust formatting only (fast)
+  - repo: local
+    hooks:
+      # Rust formatting (fast, no compilation)
+      - id: cargo-fmt
+        name: cargo fmt
+        entry: cargo fmt --manifest-path=Cargo.toml --all -- --check
+        language: system
+        files: \.rs$
+        pass_filenames: false
+
+      # Python tests (only if test files changed)
+      - id: pytest-changed
+        name: pytest (changed files only)
+        entry: uv run pytest -v -x --tb=short
+        language: system
+        files: ^tests/.*\.py$
+        pass_filenames: false

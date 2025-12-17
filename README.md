@@ -168,7 +168,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 This project uses GitHub Actions for CI/CD:
 
-- **CI Pipeline** (`ci.yml`): 
+- **CI Pipeline** (`ci.yml`):
   - Tests Rust code with `cargo test`
   - Tests Python code across Python 3.8-3.12 on Ubuntu, macOS, and Windows
   - Runs linting and formatting checks
