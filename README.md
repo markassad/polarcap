@@ -37,9 +37,28 @@ import polarcap
 
 - Rust (latest stable)
 - Python 3.8+
-- maturin
+- [uv](https://docs.astral.sh/uv/) (recommended) or pip
 
 ### Building from Source
+
+#### Using uv (Recommended)
+
+```bash
+git clone https://github.com/markassad/polarcap
+cd polarcap
+
+# Install dependencies and set up development environment
+uv sync --group dev
+
+# Build the Rust extension
+uv run maturin develop
+
+# Or use the convenient Makefile:
+make install  # Install dependencies
+make build    # Build Rust extension
+```
+
+#### Using pip
 
 ```bash
 git clone https://github.com/markassad/polarcap
@@ -49,6 +68,29 @@ maturin develop
 ```
 
 ### Running Tests
+
+#### Using uv
+
+```bash
+# Python tests
+uv run pytest
+
+# Python tests with coverage
+uv run pytest --cov=polarcap --cov-report=html
+
+# Rust tests
+cargo test
+
+# Benchmarks
+cargo bench
+
+# Or use the Makefile:
+make test      # Run Python tests
+make test-cov  # Run with coverage
+make bench     # Run benchmarks
+```
+
+#### Using pip
 
 ```bash
 # Rust tests
@@ -62,6 +104,24 @@ cargo bench
 ```
 
 ### Code Quality
+
+#### Using uv
+
+```bash
+# Format code
+uv run ruff format python/
+cargo fmt
+
+# Lint code
+uv run ruff check python/
+cargo clippy
+
+# Or use the Makefile:
+make fmt   # Format all code
+make lint  # Lint all code
+```
+
+#### Using pip
 
 ```bash
 # Rust

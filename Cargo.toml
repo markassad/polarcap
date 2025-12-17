@@ -13,12 +13,13 @@ name = "polarcap"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-pyo3 = { version = "0.20", features = ["extension-module"] }
-polars = { version = "0.35", features = ["lazy"] }
-pcap-parser = "0.15"
+pyo3 = { version = "0.27", features = ["extension-module"] }
+polars = { version = "0.52", features = ["lazy", "timezones"] }
+arrow = { version = "57.1.0", default-features = true }
+pcap-parser = "0.17"
 
 [dev-dependencies]
-criterion = "0.5"
+criterion = "0.8"
 
 [profile.release]
 lto = "fat"

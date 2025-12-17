@@ -1,4 +1,4 @@
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion};
 
 fn benchmark_pcap_parsing(_c: &mut Criterion) {
     // Placeholder benchmark for pcap parsing

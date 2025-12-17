@@ -7,7 +7,7 @@ mod parser;
 /// This module provides high-performance pcap file parsing using Rust,
 /// with data exposed as Polars DataFrames for analysis in Python.
 #[pymodule]
-fn _polarcap(_py: Python, m: &PyModule) -> PyResult<()> {
+fn _polarcap(_py: Python<'_>, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add("__version__", env!("CARGO_PKG_VERSION"))?;
     Ok(())
 }
