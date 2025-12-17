@@ -51,14 +51,15 @@ git clone https://github.com/markassad/polarcap
 cd polarcap
 
 # Install dependencies and set up development environment
-uv sync --group dev
+make install  # This installs deps AND sets up pre-commit hooks
 
 # Build the Rust extension
-uv run maturin develop
+make build
 
-# Or use the convenient Makefile:
-make install  # Install dependencies
-make build    # Build Rust extension
+# Or manually:
+uv sync --group dev
+uv run pre-commit install  # Set up git hooks
+uv run maturin develop
 ```
 
 #### Using pip
@@ -156,13 +157,35 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 1. **Fork** the repository
 2. **Clone** your fork: `git clone https://github.com/yourusername/polarcap.git`
-3. **Set up** the development environment: `make install`
+3. **Set up** the development environment: `make install` (installs deps + pre-commit hooks)
 4. **Create** a feature branch: `git checkout -b my-feature`
 5. **Make** your changes and add tests
 6. **Test** your changes: `make test lint fmt`
-7. **Commit** your changes: `git commit -am 'Add some feature'`
+7. **Commit** your changes (pre-commit hooks will run automatically)
 8. **Push** to the branch: `git push origin my-feature`
 9. **Submit** a pull request
+
+### Pre-commit Hooks
+
+This project uses [pre-commit](https://pre-commit.com/) to run checks before each commit:
+
+- **Python**: `ruff` formatting and linting
+- **Rust**: `cargo fmt` formatting checks
+- **General**: file formatting, YAML/TOML validation, merge conflict detection
+- **Tests**: runs Python tests when test files change
+
+The hooks are automatically installed when you run `make install`. You can also:
+
+```bash
+# Run all hooks manually
+make pre-commit-run
+
+# Skip hooks for a commit (not recommended)
+git commit --no-verify -m "message"
+
+# Update hook versions
+uv run pre-commit autoupdate
+```
 
 ### Continuous Integration
 
