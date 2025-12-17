@@ -1,0 +1,56 @@
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "polarcap"
+version = "0.1.0"
+description = "A Polars interface to pcap (Packet Capture) data"
+authors = [
+    { name = "Mark Assad", email = "markassad@users.noreply.github.com" }
+]
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT OR Apache-2.0" }
+keywords = ["pcap", "polars", "network", "packet-capture", "data-analysis"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Rust",
+]
+dependencies = [
+    "polars>=0.19.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "maturin>=1.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/markassad/polarcap"
+Repository = "https://github.com/markassad/polarcap"
+
+[tool.maturin]
+python-source = "python"
+module-name = "polarcap._polarcap"
+features = ["pyo3/extension-module"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.coverage.run]
+source = ["python/polarcap"]
