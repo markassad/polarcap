@@ -13,6 +13,6 @@ Example:
     >>> # print(df.head())
 """
 
-from polarcap._polarcap import __version__
+from polarcap._polarcap import __version__, add_numbers
 
-__all__ = ["__version__"]
+__all__ = ["__version__", "add_numbers"]

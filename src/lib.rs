@@ -4,9 +4,15 @@ use pyo3::prelude::*;
 ///
 /// This module provides high-performance pcap file parsing using Rust,
 /// with data exposed as Polars DataFrames for analysis in Python.
+///
+#[pyfunction]
+fn add_numbers(a: i32, b: i32) -> PyResult<i32> {
+    Ok(a + b)
+}
 #[pymodule]
 fn _polarcap(_py: Python<'_>, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add("__version__", env!("CARGO_PKG_VERSION"))?;
+    m.add_function(wrap_pyfunction!(add_numbers, m)?)?;
     Ok(())
 }
 

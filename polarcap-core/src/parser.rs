@@ -2,7 +2,6 @@
 ///
 /// This module contains the core parsing logic for pcap files,
 /// converting packet data into Polars-compatible structures.
-
 // Placeholder function to prevent unused import warnings
 #[allow(dead_code)]
 pub fn placeholder() {
@@ -17,6 +16,5 @@ mod tests {
     fn test_parser_module() {
         // Test the placeholder function
         placeholder();
-        assert!(true);
     }
 }
