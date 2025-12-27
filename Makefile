@@ -10,10 +10,10 @@ install:  ## Install dependencies and set up development environment
 	$(MAKE) pre-commit-install
 
 build:  ## Build the Rust extension for development
-	uv run maturin develop
+	CARGO_TARGET_DIR=target/maturin_debug uv run maturin develop
 
 build-release:  ## Build optimized release binary/wheel
-	uv run maturin build --release
+	CARGO_TARGET_DIR=target/maturin_release uv run maturin build --release
 
 pre-commit-install:  ## Install pre-commit hooks
 	uv run pre-commit install
