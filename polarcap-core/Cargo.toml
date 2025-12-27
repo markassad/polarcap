@@ -17,3 +17,7 @@ pcap-parser = "0.17"
 
 [dev-dependencies]
 criterion = "0.8"
+
+[[bench]]
+name = "pcap_parsing"
+harness = false

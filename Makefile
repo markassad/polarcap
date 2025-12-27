@@ -31,7 +31,7 @@ test-cov:  ## Run tests with coverage
 	uv run pytest --cov=polarcap --cov-report=html --cov-report=term
 
 lint:  ## Run linters (cargo clippy and ruff)
-	cargo clippy --workspace -- -D warnings
+	cargo clippy  --workspace --all-targets -- -D warnings
 	uv run ruff check python/
 
 fmt:  ## Format code (cargo fmt and ruff)

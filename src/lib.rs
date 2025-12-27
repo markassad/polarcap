@@ -21,11 +21,11 @@ mod tests {
     #[test]
     fn test_workspace_hint() {
         // This test serves as a reminder to run workspace tests
-        println!("");
+        println!();
         println!("💡 TIP: Run 'cargo test --workspace' to test all crates in this workspace");
         println!("   - polarcap (this crate): Python bindings");
         println!("   - polarcap-core: Core Rust functionality");
-        println!("");
+        println!();
 
         // Basic test to ensure crate compiles
         assert_eq!(env!("CARGO_PKG_NAME"), "polarcap");
