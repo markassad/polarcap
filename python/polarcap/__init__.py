@@ -23,7 +23,7 @@ from polarcap._polarcap import PCapSource, __version__, add_numbers
 __all__ = ["__version__", "add_numbers"]
 
 
-def scan_pcap(pcap_file: str, size: int = 1000) -> pl.LazyFrame:
+def scan_pcap(pcap_file: str, size: int | None = None) -> pl.LazyFrame:
     def source_generator(
         with_columns: list[str] | None,
         predicate: pl.Expr | None,

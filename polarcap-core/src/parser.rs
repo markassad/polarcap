@@ -2,70 +2,95 @@
 ///
 /// This module contains the core parsing logic for pcap files,
 /// converting packet data into Polars-compatible structures.
-use pcap_parser::*;
+use pcap::{Capture, Precision};
 use polars::prelude::*;
-use std::fs::File;
-use std::io::Read;
 use std::path::Path;
 
-/// Parse a pcap file and return a Polars DataFrame
-pub fn parse_pcap<P: AsRef<Path>>(path: P) -> Result<DataFrame, Box<dyn std::error::Error>> {
-    let mut file = File::open(path)?;
-    let mut buffer = Vec::new();
-    file.read_to_end(&mut buffer)?;
+/// Streaming pcap parser that reads packets incrementally
+pub struct PCapParser {
+    capture: Capture<pcap::Offline>,
+    packet_counter: u64,
+}
 
-    let mut timestamps = Vec::new();
-    let mut packet_numbers = Vec::new();
-    let mut captured_lengths = Vec::new();
-    let mut original_lengths = Vec::new();
-    let mut data_packets = Vec::new();
-
-    let mut packet_num: u64 = 0;
-
-    // Parse pcap header
-    let (mut rem, _header) = match parse_pcap_header(&buffer) {
-        Ok(result) => result,
-        Err(e) => return Err(format!("Failed to parse pcap header: {:?}", e).into()),
-    };
-
-    // Parse packets
-    loop {
-        match parse_pcap_frame(rem) {
-            Ok((remaining, frame)) => {
-                // Convert timestamp to microseconds
-                let ts_micros = (frame.ts_sec as i64) * 1_000_000 + (frame.ts_usec as i64);
-
-                timestamps.push(ts_micros);
-                packet_numbers.push(packet_num);
-                captured_lengths.push(frame.caplen);
-                original_lengths.push(frame.origlen);
-                data_packets.push(frame.data.to_vec());
-
-                packet_num += 1;
-                rem = remaining;
-            }
-            Err(nom::Err::Incomplete(_)) | Err(nom::Err::Error(_)) => break,
-            Err(nom::Err::Failure(e)) => {
-                return Err(format!("Parse error: {:?}", e).into());
-            }
-        }
+impl PCapParser {
+    /// Open a pcap file for streaming
+    pub fn open<P: AsRef<Path>>(path: P) -> Result<Self, Box<dyn std::error::Error>> {
+        let capture = Capture::from_file_with_precision(path, Precision::Nano)?;
+        Ok(Self {
+            capture,
+            packet_counter: 0,
+        })
     }
 
-    let df = df!(
-        "timestamp" => timestamps,
-        "packet_number" => packet_numbers,
-        "captured_length" => captured_lengths,
-        "original_length" => original_lengths,
-        "data" => data_packets,
-    )?;
+    /// Read the next batch of packets and return as a DataFrame
+    pub fn read_batch(
+        &mut self,
+        batch_size: usize,
+    ) -> Result<Option<DataFrame>, Box<dyn std::error::Error>> {
+        // Use Polars builders for more efficient Series construction
+        let mut timestamp_builder =
+            PrimitiveChunkedBuilder::<Int64Type>::new("timestamp".into(), batch_size);
+        let mut packet_number_builder =
+            PrimitiveChunkedBuilder::<UInt64Type>::new("packet_number".into(), batch_size);
+        let mut captured_length_builder =
+            PrimitiveChunkedBuilder::<UInt32Type>::new("captured_length".into(), batch_size);
+        let mut original_length_builder =
+            PrimitiveChunkedBuilder::<UInt32Type>::new("original_length".into(), batch_size);
+        let mut data_builder = BinaryChunkedBuilder::new("data".into(), batch_size);
 
-    // Convert timestamp column to Datetime type
-    let df = df
-        .lazy()
-        .with_column(col("timestamp").cast(DataType::Datetime(TimeUnit::Microseconds, None)))
-        .collect()?;
+        let mut count = 0;
 
-    Ok(df)
+        // Read up to batch_size packets
+        while count < batch_size {
+            match self.capture.next_packet() {
+                Ok(packet) => {
+                    // Convert timestamp to nanoseconds
+                    let ts_nanos =
+                        packet.header.ts.tv_sec * 1_000_000_000 + packet.header.ts.tv_usec;
+
+                    timestamp_builder.append_value(ts_nanos);
+                    packet_number_builder.append_value(self.packet_counter);
+                    captured_length_builder.append_value(packet.header.caplen);
+                    original_length_builder.append_value(packet.header.len);
+                    data_builder.append_value(packet.data);
+
+                    self.packet_counter += 1;
+                    count += 1;
+                }
+                Err(_) => {
+                    // End of file or error
+                    break;
+                }
+            }
+        }
+
+        // If no packets were read, return None
+        if count == 0 {
+            return Ok(None);
+        }
+
+        // Finish building the series
+        let timestamp_series = timestamp_builder.finish().into_series();
+        let packet_number_series = packet_number_builder.finish().into_series();
+        let captured_length_series = captured_length_builder.finish().into_series();
+        let original_length_series = original_length_builder.finish().into_series();
+        let data_series = data_builder.finish().into_series();
+
+        // Convert timestamp to Datetime type with nanosecond precision
+        let timestamp_series =
+            timestamp_series.cast(&DataType::Datetime(TimeUnit::Nanoseconds, None))?;
+
+        // Create DataFrame from series
+        let df = DataFrame::new(vec![
+            timestamp_series.into(),
+            packet_number_series.into(),
+            captured_length_series.into(),
+            original_length_series.into(),
+            data_series.into(),
+        ])?;
+
+        Ok(Some(df))
+    }
 }
 
 #[cfg(test)]
