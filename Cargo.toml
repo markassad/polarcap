@@ -19,7 +19,7 @@ crate-type = ["cdylib"]
 [dependencies]
 polarcap-core = { path = "polarcap-core" }
 polars = { version = "0.52.0", default-features = false }
-pyo3 = { version = "0.26", features = ["extension-module"] }
+pyo3 = { version = "0.27", features = ["extension-module"] }
 pyo3-polars = { version = "0.25.0", features = ["derive", "lazy"] }
 
 [profile.release]
