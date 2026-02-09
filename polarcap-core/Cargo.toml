@@ -11,7 +11,7 @@ name = "polarcap_core"
 crate-type = ["rlib"]
 
 [dependencies]
-polars = { version = "0.52", features = ["lazy", "timezones"] }
+polars = { version = "0.53", features = ["lazy", "timezones"] }
 arrow = { version = "57.1.0", default-features = true }
 pcap-parser = "0.17"
 pcap = { version = "2.4.0", features = ["lending-iter"] }
